@@ -44,7 +44,7 @@ std::unordered_map<int, Item::SharedActor>::iterator Utility::destroyActor(std::
 
 std::unordered_map<int, Item::SharedArea>::iterator Utility::destroyArea(std::unordered_map<int, Item::SharedArea>::iterator a)
 {
-    Item::Area::identifier.remove(a->first, core->getData()->areas.size());
+    streamer::areas::Area::identifier.remove(a->first, core->getData()->areas.size());
     for (std::unordered_map<int, Player>::iterator p = core->getData()->players.begin(); p != core->getData()->players.end(); ++p)
     {
         p->second.internalAreas.erase(a->first);

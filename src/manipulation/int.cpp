@@ -1571,7 +1571,7 @@ int Manipulation::setIntData(AMX *amx, cell *params)
 					{
 						if (static_cast<int>(params[4]) != INVALID_PLAYER_ID)
 						{
-							a->second->attach = std::make_shared<Item::Area::Attach>();
+							a->second->attach = std::make_shared<streamer::areas::Area::Attach>();
 							a->second->attach->object = std::make_tuple(INVALID_STREAMER_ID, STREAMER_OBJECT_TYPE_DYNAMIC, INVALID_PLAYER_ID);
 							a->second->attach->vehicle = INVALID_VEHICLE_ID;
 							a->second->attach->position = a->second->position;
@@ -1598,7 +1598,7 @@ int Manipulation::setIntData(AMX *amx, cell *params)
 					{
 						if (static_cast<int>(params[4]) != INVALID_VEHICLE_ID)
 						{
-							a->second->attach = std::make_shared<Item::Area::Attach>();
+							a->second->attach = std::make_shared<streamer::areas::Area::Attach>();
 							a->second->attach->object = std::make_tuple(INVALID_STREAMER_ID, STREAMER_OBJECT_TYPE_DYNAMIC, INVALID_PLAYER_ID);
 							a->second->attach->player = INVALID_PLAYER_ID;
 							a->second->attach->position = a->second->position;

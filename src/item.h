@@ -21,6 +21,7 @@
 #include "identifier.h"
 
 #include "actors.hpp"
+#include "areas.hpp"
 #include "checkpoints.hpp"
 #include "map-icons.hpp"
 #include "objects.hpp"
@@ -30,51 +31,6 @@
 
 namespace Item
 {
-    struct Area
-    {
-        Area();
-
-        AMX* amx;
-        int areaId;
-        SharedCell cell;
-        float comparableSize;
-        Eigen::Vector2f height;
-        int priority;
-        int references;
-        float size;
-        bool spectateMode;
-        int type;
-
-        std::variant<Polygon2d, Box2d, Box3d, Eigen::Vector2f, Eigen::Vector3f> position;
-
-        struct Attach
-        {
-            Attach();
-
-            Eigen::Vector2f height;
-            std::tuple<int, int, int> object;
-            int player;
-            std::variant<Polygon2d, Box2d, Box3d, Eigen::Vector2f, Eigen::Vector3f> position;
-            Eigen::Vector3f positionOffset;
-            int references;
-            int vehicle;
-
-            EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        };
-
-        std::shared_ptr<Attach> attach;
-
-        std::unordered_set<int> areas;
-        std::vector<int> extras;
-        std::unordered_map<int, std::vector<int>> extraExtras;
-        std::unordered_set<int> interiors;
-        std::bitset<PLAYER_POOL_SIZE> players;
-        std::unordered_set<int> worlds;
-
-        static Identifier identifier;
-
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    };
 }
 
 #endif

@@ -192,161 +192,145 @@ cell AMX_NATIVE_CALL Natives::CreateDynamic3DTextLabelEx(AMX* amx, cell* params)
 cell AMX_NATIVE_CALL Natives::CreateDynamicCircleEx(AMX* amx, cell* params)
 {
     CHECK_PARAMS(10);
-    if (core->getData()->getGlobalMaxItems(STREAMER_TYPE_AREA) == core->getData()->areas.size())
-    {
-        return INVALID_STREAMER_ID;
-    }
-    int areaId = Item::Area::identifier.get();
-    Item::SharedArea area(new Item::Area);
-    area->amx = amx;
-    area->areaId = areaId;
-    area->spectateMode = true;
-    area->type = STREAMER_AREA_TYPE_CIRCLE;
-    area->position = Eigen::Vector2f(amx_ctof(params[1]), amx_ctof(params[2]));
-    area->comparableSize = amx_ctof(params[3]) * amx_ctof(params[3]);
-    area->size = amx_ctof(params[3]);
-    Utility::convertArrayToContainer(amx, params[4], params[8], area->worlds);
-    Utility::convertArrayToContainer(amx, params[5], params[9], area->interiors);
-    Utility::convertArrayToContainer(amx, params[6], params[10], area->players);
-    area->priority = static_cast<int>(params[7]);
-    core->getGrid()->addArea(area);
-    core->getData()->areas.insert(std::make_pair(areaId, area));
-    return static_cast<cell>(areaId);
+
+    Eigen::Vector2f position { amx_ctof(params[1]), amx_ctof(params[2]) };
+
+    float size = amx_ctof(params[3]);
+
+    std::unordered_set<int> worlds;
+    std::unordered_set<int> interiors;
+    std::unordered_set<int> players;
+    std::unordered_set<int> areas;
+    Utility::convertArrayToContainer(amx, params[4], params[8], worlds);
+    Utility::convertArrayToContainer(amx, params[5], params[9], interiors);
+    Utility::convertArrayToContainer(amx, params[6], params[10], players);
+
+    int priority = static_cast<int>(params[7]);
+
+    auto area = streamer::areas::CreateDynamicCircleEx(amx, position, size, worlds, interiors, players, priority);
+    if (area == nullptr) return INVALID_STREAMER_ID;
+    return static_cast<cell>(area->getID());
 }
 
 cell AMX_NATIVE_CALL Natives::CreateDynamicCylinderEx(AMX* amx, cell* params)
 {
     CHECK_PARAMS(12);
-    if (core->getData()->getGlobalMaxItems(STREAMER_TYPE_AREA) == core->getData()->areas.size())
-    {
-        return INVALID_STREAMER_ID;
-    }
-    int areaId = Item::Area::identifier.get();
-    Item::SharedArea area(new Item::Area);
-    area->amx = amx;
-    area->areaId = areaId;
-    area->spectateMode = true;
-    area->type = STREAMER_AREA_TYPE_CYLINDER;
-    area->position = Eigen::Vector2f(amx_ctof(params[1]), amx_ctof(params[2]));
-    area->height = Eigen::Vector2f(amx_ctof(params[3]), amx_ctof(params[4]));
-    area->comparableSize = amx_ctof(params[5]) * amx_ctof(params[5]);
-    area->size = amx_ctof(params[5]);
-    Utility::convertArrayToContainer(amx, params[6], params[10], area->worlds);
-    Utility::convertArrayToContainer(amx, params[7], params[11], area->interiors);
-    Utility::convertArrayToContainer(amx, params[8], params[12], area->players);
-    area->priority = static_cast<int>(params[9]);
-    core->getGrid()->addArea(area);
-    core->getData()->areas.insert(std::make_pair(areaId, area));
-    return static_cast<cell>(areaId);
+    Eigen::Vector2f position { amx_ctof(params[1]), amx_ctof(params[2]) };
+    Eigen::Vector2f height { amx_ctof(params[3]), amx_ctof(params[4]) };
+    float           size = amx_ctof(params[5]);
+
+    std::unordered_set<int> worlds;
+    std::unordered_set<int> interiors;
+    std::unordered_set<int> players;
+    std::unordered_set<int> areas;
+    Utility::convertArrayToContainer(amx, params[6], params[10], worlds);
+    Utility::convertArrayToContainer(amx, params[7], params[11], interiors);
+    Utility::convertArrayToContainer(amx, params[8], params[12], players);
+
+    int priority = static_cast<int>(params[9]);
+
+    auto area = streamer::areas::CreateDynamicCylinderEx(amx, position, height, size, worlds, interiors, players, priority);
+    if (area == nullptr) return INVALID_STREAMER_ID;
+    return static_cast<cell>(area->getID());
 }
 
 cell AMX_NATIVE_CALL Natives::CreateDynamicSphereEx(AMX* amx, cell* params)
 {
     CHECK_PARAMS(11);
-    if (core->getData()->getGlobalMaxItems(STREAMER_TYPE_AREA) == core->getData()->areas.size())
-    {
-        return INVALID_STREAMER_ID;
-    }
-    int areaId = Item::Area::identifier.get();
-    Item::SharedArea area(new Item::Area);
-    area->amx = amx;
-    area->areaId = areaId;
-    area->spectateMode = true;
-    area->type = STREAMER_AREA_TYPE_SPHERE;
-    area->position = Eigen::Vector3f(amx_ctof(params[1]), amx_ctof(params[2]), amx_ctof(params[3]));
-    area->comparableSize = amx_ctof(params[4]) * amx_ctof(params[4]);
-    area->size = amx_ctof(params[4]);
-    Utility::convertArrayToContainer(amx, params[5], params[9], area->worlds);
-    Utility::convertArrayToContainer(amx, params[6], params[10], area->interiors);
-    Utility::convertArrayToContainer(amx, params[7], params[11], area->players);
-    area->priority = static_cast<int>(params[8]);
-    core->getGrid()->addArea(area);
-    core->getData()->areas.insert(std::make_pair(areaId, area));
-    return static_cast<cell>(areaId);
+
+    Eigen::Vector3f position { amx_ctof(params[1]), amx_ctof(params[2]), amx_ctof(params[3]) };
+    float           size = amx_ctof(params[4]);
+
+    std::unordered_set<int> worlds;
+    std::unordered_set<int> interiors;
+    std::unordered_set<int> players;
+    std::unordered_set<int> areas;
+    Utility::convertArrayToContainer(amx, params[5], params[9], worlds);
+    Utility::convertArrayToContainer(amx, params[6], params[10], interiors);
+    Utility::convertArrayToContainer(amx, params[7], params[11], players);
+
+    int priority = static_cast<int>(params[8]);
+
+    auto area = streamer::areas::CreateDynamicSphereEx(amx, position, size, worlds, interiors, players, priority);
+    if (area == nullptr) return INVALID_STREAMER_ID;
+    return static_cast<cell>(area->getID());
 }
 
 cell AMX_NATIVE_CALL Natives::CreateDynamicRectangleEx(AMX* amx, cell* params)
 {
     CHECK_PARAMS(11);
-    if (core->getData()->getGlobalMaxItems(STREAMER_TYPE_AREA) == core->getData()->areas.size())
-    {
-        return INVALID_STREAMER_ID;
-    }
-    int areaId = Item::Area::identifier.get();
-    Item::SharedArea area(new Item::Area);
-    area->amx = amx;
-    area->areaId = areaId;
-    area->spectateMode = true;
-    area->type = STREAMER_AREA_TYPE_RECTANGLE;
-    area->position = Box2d(Eigen::Vector2f(amx_ctof(params[1]), amx_ctof(params[2])), Eigen::Vector2f(amx_ctof(params[3]), amx_ctof(params[4])));
-    boost::geometry::correct(std::get<Box2d>(area->position));
-    area->comparableSize = static_cast<float>(boost::geometry::comparable_distance(std::get<Box2d>(area->position).min_corner(), std::get<Box2d>(area->position).max_corner()));
-    area->size = static_cast<float>(boost::geometry::distance(std::get<Box2d>(area->position).min_corner(), std::get<Box2d>(area->position).max_corner()));
-    Utility::convertArrayToContainer(amx, params[5], params[9], area->worlds);
-    Utility::convertArrayToContainer(amx, params[6], params[10], area->interiors);
-    Utility::convertArrayToContainer(amx, params[7], params[11], area->players);
-    area->priority = static_cast<int>(params[8]);
-    core->getGrid()->addArea(area);
-    core->getData()->areas.insert(std::make_pair(areaId, area));
-    return static_cast<cell>(areaId);
+    Eigen::Vector2f minposition { amx_ctof(params[1]), amx_ctof(params[2]) };
+    Eigen::Vector2f maxposition { amx_ctof(params[3]), amx_ctof(params[4]) };
+
+    std::unordered_set<int> worlds;
+    std::unordered_set<int> interiors;
+    std::unordered_set<int> players;
+    std::unordered_set<int> areas;
+    Utility::convertArrayToContainer(amx, params[5], params[9], worlds);
+    Utility::convertArrayToContainer(amx, params[6], params[10], interiors);
+    Utility::convertArrayToContainer(amx, params[7], params[11], players);
+
+    int priority = static_cast<int>(params[8]);
+
+    auto area = streamer::areas::CreateDynamicRectangleEx(amx, minposition, maxposition, worlds, interiors, players, priority);
+    if (area == nullptr) return INVALID_STREAMER_ID;
+    return static_cast<cell>(area->getID());
 }
 
 cell AMX_NATIVE_CALL Natives::CreateDynamicCuboidEx(AMX* amx, cell* params)
 {
     CHECK_PARAMS(13);
-    if (core->getData()->getGlobalMaxItems(STREAMER_TYPE_AREA) == core->getData()->areas.size())
-    {
-        return INVALID_STREAMER_ID;
-    }
-    int areaId = Item::Area::identifier.get();
-    Item::SharedArea area(new Item::Area);
-    area->amx = amx;
-    area->areaId = areaId;
-    area->spectateMode = true;
-    area->type = STREAMER_AREA_TYPE_CUBOID;
-    area->position = Box3d(Eigen::Vector3f(amx_ctof(params[1]), amx_ctof(params[2]), amx_ctof(params[3])), Eigen::Vector3f(amx_ctof(params[4]), amx_ctof(params[5]), amx_ctof(params[6])));
-    boost::geometry::correct(std::get<Box3d>(area->position));
-    area->comparableSize = static_cast<float>(boost::geometry::comparable_distance(Eigen::Vector2f(std::get<Box3d>(area->position).min_corner()[0], std::get<Box3d>(area->position).min_corner()[1]), Eigen::Vector2f(std::get<Box3d>(area->position).max_corner()[0], std::get<Box3d>(area->position).max_corner()[1])));
-    area->size = static_cast<float>(boost::geometry::distance(Eigen::Vector2f(std::get<Box3d>(area->position).min_corner()[0], std::get<Box3d>(area->position).min_corner()[1]), Eigen::Vector2f(std::get<Box3d>(area->position).max_corner()[0], std::get<Box3d>(area->position).max_corner()[1])));
-    Utility::convertArrayToContainer(amx, params[7], params[11], area->worlds);
-    Utility::convertArrayToContainer(amx, params[8], params[12], area->interiors);
-    Utility::convertArrayToContainer(amx, params[9], params[13], area->players);
-    area->priority = static_cast<int>(params[10]);
-    core->getGrid()->addArea(area);
-    core->getData()->areas.insert(std::make_pair(areaId, area));
-    return static_cast<cell>(areaId);
+
+    Eigen::Vector3f minposition { amx_ctof(params[1]), amx_ctof(params[2]), amx_ctof(params[3]) };
+    Eigen::Vector3f maxposition { amx_ctof(params[4]), amx_ctof(params[5]), amx_ctof(params[6]) };
+
+    std::unordered_set<int> worlds;
+    std::unordered_set<int> interiors;
+    std::unordered_set<int> players;
+    std::unordered_set<int> areas;
+    Utility::convertArrayToContainer(amx, params[7], params[11], worlds);
+    Utility::convertArrayToContainer(amx, params[8], params[12], interiors);
+    Utility::convertArrayToContainer(amx, params[9], params[13], players);
+
+    int priority = static_cast<int>(params[10]);
+
+    auto area = streamer::areas::CreateDynamicCuboidEx(amx, minposition, maxposition, worlds, interiors, players, priority);
+    if (area == nullptr) return INVALID_STREAMER_ID;
+    return static_cast<cell>(area->getID());
 }
 
 cell AMX_NATIVE_CALL Natives::CreateDynamicPolygonEx(AMX* amx, cell* params)
 {
     CHECK_PARAMS(11);
-    if (core->getData()->getGlobalMaxItems(STREAMER_TYPE_AREA) == core->getData()->areas.size())
+
+    int pointsSize = static_cast<int>(params[4]);
+    if (pointsSize < 6 || pointsSize % 2)
     {
+        Utility::logError("CreateDynamicPolygon: Number of points must be divisible by 2 and bigger or equal to 6.");
         return INVALID_STREAMER_ID;
     }
-    if (static_cast<int>(params[4]) < 6 || static_cast<int>(params[4]) % 2)
-    {
-        Utility::logError("CreateDynamicPolygonEx: Number of points must be divisible by 2 and bigger or equal to 6.");
-        return INVALID_STREAMER_ID;
-    }
-    int areaId = Item::Area::identifier.get();
-    Item::SharedArea area(new Item::Area);
-    area->amx = amx;
-    area->areaId = areaId;
-    area->spectateMode = true;
-    area->type = STREAMER_AREA_TYPE_POLYGON;
-    Utility::convertArrayToPolygon(amx, params[1], params[4], std::get<Polygon2d>(area->position));
-    area->height = Eigen::Vector2f(amx_ctof(params[2]), amx_ctof(params[3]));
-    Box2d box = boost::geometry::return_envelope<Box2d>(std::get<Polygon2d>(area->position));
-    area->comparableSize = static_cast<float>(boost::geometry::comparable_distance(box.min_corner(), box.max_corner()));
-    area->size = static_cast<float>(boost::geometry::distance(box.min_corner(), box.max_corner()));
-    Utility::convertArrayToContainer(amx, params[5], params[9], area->worlds);
-    Utility::convertArrayToContainer(amx, params[6], params[10], area->interiors);
-    Utility::convertArrayToContainer(amx, params[7], params[11], area->players);
-    area->priority = static_cast<int>(params[8]);
-    core->getGrid()->addArea(area);
-    core->getData()->areas.insert(std::make_pair(areaId, area));
-    return static_cast<cell>(areaId);
+
+    std::vector<Eigen::Vector2f> points;
+    cell*                        array = NULL;
+    amx_GetAddr(amx, params[1], &array);
+    for (std::size_t i = 0; i < static_cast<std::size_t>(pointsSize); i += 2)
+        points.push_back(Eigen::Vector2f(amx_ctof(array[i]), amx_ctof(array[i + 1])));
+
+    Eigen::Vector2f height { amx_ctof(params[2]), amx_ctof(params[3]) };
+
+    std::unordered_set<int> worlds;
+    std::unordered_set<int> interiors;
+    std::unordered_set<int> players;
+    std::unordered_set<int> areas;
+    Utility::convertArrayToContainer(amx, params[5], params[9], worlds);
+    Utility::convertArrayToContainer(amx, params[6], params[10], interiors);
+    Utility::convertArrayToContainer(amx, params[7], params[11], players);
+
+    int priority = static_cast<int>(params[8]);
+
+    auto area = streamer::areas::CreateDynamicPolygonEx(amx, points, height, worlds, interiors, players, priority);
+    if (area == nullptr) return INVALID_STREAMER_ID;
+    return static_cast<cell>(area->getID());
 }
 
 cell AMX_NATIVE_CALL Natives::CreateDynamicActorEx(AMX* amx, cell* params)

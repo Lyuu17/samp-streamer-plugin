@@ -71,6 +71,10 @@ namespace streamer
         virtual void                clearAnimation()                 = 0;
     };
 
+    struct IArea : public IIDProvider, public IExtensible
+    {
+    };
+
     struct ICheckpoint : public IIDProvider, public IExtensible
     {
         virtual Vector3 getPosition() const = 0;
@@ -173,6 +177,23 @@ struct IOmpStreamerComponent : public IComponent
     virtual bool                              isDynamicActorStreamedIn(int actorId, int playerId)                                                                                                                                                                                                                                                                                                                       = 0;
     virtual std::shared_ptr<streamer::IActor> getPlayerTargetDynamicActor(int playerId)                                                                                                                                                                                                                                                                                                                                 = 0;
     virtual std::shared_ptr<streamer::IActor> getPlayerCameraTargetDynActor(int playerId)                                                                                                                                                                                                                                                                                                                               = 0;
+
+    virtual std::shared_ptr<streamer::IArea> createDynamicCircle(const Vector2& position, float size, int worldId, int interiorId, int playerId, int priority)                          = 0;
+    virtual std::shared_ptr<streamer::IArea> createDynamicCylinder(const Vector2& position, const Vector2& height, float size, int worldId, int interiorId, int playerId, int priority) = 0;
+    virtual std::shared_ptr<streamer::IArea> createDynamicSphere(const Vector3& position, float size, int worldId, int interiorId, int playerId, int priority)                          = 0;
+    virtual std::shared_ptr<streamer::IArea> createDynamicRectangle(const Vector2& minposition, const Vector2& maxposition, int worldId, int interiorId, int playerId, int priority)    = 0;
+    virtual std::shared_ptr<streamer::IArea> createDynamicCuboid(const Vector3& minposition, const Vector3& maxposition, int worldId, int interiorId, int playerId, int priority)       = 0;
+    virtual std::shared_ptr<streamer::IArea> createDynamicPolygon(const std::vector<Vector2>& points, const Vector2& height, int worldId, int interiorId, int playerId, int priority)   = 0;
+
+    virtual std::shared_ptr<streamer::IArea> createDynamicCircleEx(const Vector2& position, float size, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority)                          = 0;
+    virtual std::shared_ptr<streamer::IArea> createDynamicCylinderEx(const Vector2& position, const Vector2& height, float size, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority) = 0;
+    virtual std::shared_ptr<streamer::IArea> createDynamicSphereEx(const Vector3& position, float size, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority)                          = 0;
+    virtual std::shared_ptr<streamer::IArea> createDynamicRectangleEx(const Vector2& minposition, const Vector2& maxposition, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority)    = 0;
+    virtual std::shared_ptr<streamer::IArea> createDynamicCuboidEx(const Vector3& minposition, const Vector3& maxposition, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority)       = 0;
+    virtual std::shared_ptr<streamer::IArea> createDynamicPolygonEx(const std::vector<Vector2>& points, const Vector2& height, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority)   = 0;
+
+    virtual std::shared_ptr<streamer::IArea> getDynamicArea(int areaId)     = 0;
+    virtual bool                             destroyDynamicArea(int areaId) = 0;
 
     virtual std::shared_ptr<streamer::ICheckpoint> getDynamicCheckpoint(int checkpointId)                                                                                                                                                                                                                                                                     = 0;
     virtual std::shared_ptr<streamer::ICheckpoint> createDynamicCheckpoint(const Vector3& position, float size, int worldId = -1, int interiorId = -1, int playerId = -1, float streamDistance = STREAMER_RACE_CP_SD, int areaId = -1, int priority = 0)                                                                                                      = 0;

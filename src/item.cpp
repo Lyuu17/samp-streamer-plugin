@@ -19,8 +19,3 @@
 
 #include "item.h"
 #include "identifier.h"
-
-Identifier Item::Area::identifier;
-
-Item::Area::Area() : references(0) {}
-Item::Area::Attach::Attach() : references(0) {}

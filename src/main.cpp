@@ -408,6 +408,85 @@ class OmpStreamerComponent final : public CoreEventHandler, public PawnEventHand
         return streamer::actors::GetPlayerCameraTargetDynActor(playerId);
     }
 
+    // areas
+    std::shared_ptr<streamer::IArea> createDynamicCircle(const Vector2& position, float size, int worldId, int interiorId, int playerId, int priority)
+    {
+        return streamer::areas::CreateDynamicCircle(std::nullopt, Eigen::Vector2f { position.x, position.y }, size, worldId, interiorId, playerId, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> createDynamicCylinder(const Vector2& position, const Vector2& height, float size, int worldId, int interiorId, int playerId, int priority)
+    {
+        return streamer::areas::CreateDynamicCylinder(std::nullopt, Eigen::Vector2f { position.x, position.y }, Eigen::Vector2f { height.x, height.y }, size, worldId, interiorId, playerId, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> createDynamicSphere(const Vector3& position, float size, int worldId, int interiorId, int playerId, int priority)
+    {
+        return streamer::areas::CreateDynamicSphere(std::nullopt, Eigen::Vector3f { position.x, position.y, position.z }, size, worldId, interiorId, playerId, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> createDynamicRectangle(const Vector2& minposition, const Vector2& maxposition, int worldId, int interiorId, int playerId, int priority)
+    {
+        return streamer::areas::CreateDynamicRectangle(std::nullopt, Eigen::Vector2f { minposition.x, minposition.y }, Eigen::Vector2f { maxposition.x, maxposition.y }, worldId, interiorId, playerId, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> createDynamicCuboid(const Vector3& minposition, const Vector3& maxposition, int worldId, int interiorId, int playerId, int priority)
+    {
+        return streamer::areas::CreateDynamicCuboid(std::nullopt, Eigen::Vector3f { minposition.x, minposition.y, minposition.z }, Eigen::Vector3f { maxposition.x, maxposition.y, maxposition.z }, worldId, interiorId, playerId, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> createDynamicPolygon(const std::vector<Vector2>& points, const Vector2& height, int worldId, int interiorId, int playerId, int priority)
+    {
+        std::vector<Eigen::Vector2f> p;
+        for (const auto& point : points)
+            p.push_back({ point.x, point.y });
+
+        return streamer::areas::CreateDynamicPolygon(std::nullopt, p, Eigen::Vector2f { height.x, height.y }, worldId, interiorId, playerId, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> createDynamicCircleEx(const Vector2& position, float size, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority)
+    {
+        return streamer::areas::CreateDynamicCircleEx(std::nullopt, Eigen::Vector2f { position.x, position.y }, size, worlds, interiors, players, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> createDynamicCylinderEx(const Vector2& position, const Vector2& height, float size, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority)
+    {
+        return streamer::areas::CreateDynamicCylinderEx(std::nullopt, Eigen::Vector2f { position.x, position.y }, Eigen::Vector2f { height.x, height.y }, size, worlds, interiors, players, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> createDynamicSphereEx(const Vector3& position, float size, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority)
+    {
+        return streamer::areas::CreateDynamicSphereEx(std::nullopt, Eigen::Vector3f { position.x, position.y, position.z }, size, worlds, interiors, players, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> createDynamicRectangleEx(const Vector2& minposition, const Vector2& maxposition, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority)
+    {
+        return streamer::areas::CreateDynamicRectangleEx(std::nullopt, Eigen::Vector2f { minposition.x, minposition.y }, Eigen::Vector2f { maxposition.x, maxposition.y }, worlds, interiors, players, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> createDynamicCuboidEx(const Vector3& minposition, const Vector3& maxposition, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority)
+    {
+        return streamer::areas::CreateDynamicCuboidEx(std::nullopt, Eigen::Vector3f { minposition.x, minposition.y, minposition.z }, Eigen::Vector3f { maxposition.x, maxposition.y, maxposition.z }, worlds, interiors, players, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> createDynamicPolygonEx(const std::vector<Vector2>& points, const Vector2& height, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, int priority)
+    {
+        std::vector<Eigen::Vector2f> p;
+        for (const auto& point : points)
+            p.push_back({ point.x, point.y });
+
+        return streamer::areas::CreateDynamicPolygonEx(std::nullopt, p, Eigen::Vector2f { height.x, height.y }, worlds, interiors, players, priority);
+    }
+
+    std::shared_ptr<streamer::IArea> getDynamicArea(int areaId)
+    {
+        return streamer::areas::GetDynamicArea(areaId);
+    }
+
+    bool destroyDynamicArea(int areaId)
+    {
+        return streamer::areas::DestroyDynamicArea(areaId);
+    }
+
     // checkpoints
     std::shared_ptr<streamer::ICheckpoint> getDynamicCheckpoint(int checkpointId)
     {
