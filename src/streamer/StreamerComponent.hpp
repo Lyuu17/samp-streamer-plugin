@@ -17,7 +17,8 @@
 
 #pragma once
 
-#include "sdk.hpp"
+#include <sdk.hpp>
+#include <Server/Components/Objects/objects.hpp>
 
 constexpr auto STREAMER_ACTOR_SD = 200.0f;
 
@@ -33,6 +34,18 @@ constexpr auto STREAMER_PICKUP_SD = 200.0f;
 constexpr auto STREAMER_RACE_CP_SD = 200.0;
 
 constexpr auto STREAMER_3D_TEXT_LABEL_SD = 200.0f;
+
+enum StreamerItemType
+{
+    STREAMER_TYPE_OBJECT = 0,
+    STREAMER_TYPE_PICKUP,
+    STREAMER_TYPE_CP,
+    STREAMER_TYPE_RACE_CP,
+    STREAMER_TYPE_MAP_ICON,
+    STREAMER_TYPE_3D_TEXT_LABEL,
+    STREAMER_TYPE_AREA,
+    STREAMER_TYPE_ACTOR,
+};
 
 namespace streamer
 {
@@ -164,11 +177,35 @@ namespace streamer
         virtual void               setText(const std::string& text)            = 0;
         virtual void               setText(const std::string& text, int color) = 0;
     };
+
+    // events
+
+    struct StreamerEventHandler
+    {
+        virtual void onDynamicObjectMoved(const std::shared_ptr<IObject>& object) {}
+        virtual void onPlayerEditDynamicObject(IPlayer& player, const std::shared_ptr<IObject>& object, ObjectEditResponse response, Vector3 offset, Vector3 rotation) {}
+        virtual void onPlayerSelectDynamicObject(IPlayer& player, const std::shared_ptr<IObject>& object) {}
+        virtual void onPlayerShootDynamicObject(IPlayer& player, const std::shared_ptr<IObject>& object, const PlayerBulletData& bulletData) {}
+        virtual void onPlayerPickUpDynamicPickup(IPlayer& player, const std::shared_ptr<IPickup>& pickup) {}
+        virtual void onPlayerEnterDynamicCP(IPlayer& player, const std::shared_ptr<ICheckpoint>& cp) {}
+        virtual void onPlayerLeaveDynamicCP(IPlayer& player, const std::shared_ptr<ICheckpoint>& cp) {}
+        virtual void onPlayerEnterDynamicRaceCP(IPlayer& player, const std::shared_ptr<IRaceCheckpoint>& cp) {}
+        virtual void onPlayerLeaveDynamicRaceCP(IPlayer& player, const std::shared_ptr<IRaceCheckpoint>& cp) {}
+        virtual void onPlayerEnterDynamicArea(IPlayer& player, const std::shared_ptr<IArea>& area) {}
+        virtual void onPlayerLeaveDynamicArea(IPlayer& player, const std::shared_ptr<IArea>& area) {}
+        virtual void onPlayerGiveDamageDynamicActor(IPlayer& player, const std::shared_ptr<IActor>& actor, float amount, unsigned weapon, BodyPart part) {}
+        virtual void onDynamicActorStreamIn(IPlayer& player, const std::shared_ptr<IActor>& actor) {}
+        virtual void onDynamicActorStreamOut(IPlayer& player, const std::shared_ptr<IActor>& actor) {}
+        virtual void onItemStreamIn(IPlayer& player, int itemId, StreamerItemType type) {}
+        virtual void onItemStreamOut(IPlayer& player, int itemId, StreamerItemType type) {}
+    };
 } // namespace streamer
 
 struct IOmpStreamerComponent : public IComponent
 {
     PROVIDE_UID(0x11897f0dbabe4f7c);
+
+    virtual IEventDispatcher<streamer::StreamerEventHandler>& getEventDispatcher() = 0;
 
     virtual std::shared_ptr<streamer::IActor> getDynamicActor(int actorId)                                                                                                                                                                                                                                                                                   = 0;
     virtual std::shared_ptr<streamer::IActor> createDynamicActor(int modelId, const Vector3& position, float rotation, bool invulnerable, float health, int worldId, int interiorId, int playerId, float streamDistance, int areaId, int priority)                                                                                                           = 0;

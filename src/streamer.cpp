@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "OmpStreamerComponent.hpp"
 #include "main.h"
 
 #include "streamer.h"
@@ -411,6 +412,10 @@ void Streamer::executeCallbacks()
 			std::unordered_map<int, Item::SharedArea>::iterator a = core->getData()->areas.find(std::get<0>(c->second));
 			if (a != core->getData()->areas.end())
 			{
+                auto p = OmpStreamerComponent::instance->players->get(std::get<0>(*c));
+                if (p)
+                    OmpStreamerComponent::instance->eventDispatcher.dispatch(&streamer::StreamerEventHandler::onPlayerLeaveDynamicArea, *p, a->second);
+
 				for (std::set<AMX*>::iterator i = core->getData()->interfaces.begin(); i != core->getData()->interfaces.end(); ++i)
 				{
 					int amxIndex = 0;
@@ -433,6 +438,10 @@ void Streamer::executeCallbacks()
 			std::unordered_map<int, Item::SharedArea>::iterator a = core->getData()->areas.find(std::get<0>(c->second));
 			if (a != core->getData()->areas.end())
 			{
+                auto p = OmpStreamerComponent::instance->players->get(std::get<0>(*c));
+                if (p)
+                    OmpStreamerComponent::instance->eventDispatcher.dispatch(&streamer::StreamerEventHandler::onPlayerEnterDynamicArea, *p, a->second);
+
 				for (std::set<AMX*>::iterator i = core->getData()->interfaces.begin(); i != core->getData()->interfaces.end(); ++i)
 				{
 					int amxIndex = 0;
@@ -455,6 +464,8 @@ void Streamer::executeCallbacks()
 			std::unordered_map<int, Item::SharedObject>::iterator o = core->getData()->objects.find(*c);
 			if (o != core->getData()->objects.end())
 			{
+                OmpStreamerComponent::instance->eventDispatcher.dispatch(&streamer::StreamerEventHandler::onDynamicObjectMoved, o->second);
+
 				for (std::set<AMX*>::iterator i = core->getData()->interfaces.begin(); i != core->getData()->interfaces.end(); ++i)
 				{
 					int amxIndex = 0;
@@ -524,6 +535,11 @@ void Streamer::executeCallbacks()
 					break;
 				}
 			}
+
+            auto p = OmpStreamerComponent::instance->players->get(std::get<2>(*c));
+            if (p)
+                OmpStreamerComponent::instance->eventDispatcher.dispatch(&streamer::StreamerEventHandler::onItemStreamIn, *p, std::get<1>(*c), (StreamerItemType) std::get<0>(*c));
+
 			for (std::set<AMX*>::iterator i = core->getData()->interfaces.begin(); i != core->getData()->interfaces.end(); ++i)
 			{
 				int amxIndex = 0;
@@ -594,6 +610,11 @@ void Streamer::executeCallbacks()
 					break;
 				}
 			}
+
+            auto p = OmpStreamerComponent::instance->players->get(std::get<2>(*c));
+            if (p)
+                OmpStreamerComponent::instance->eventDispatcher.dispatch(&streamer::StreamerEventHandler::onItemStreamOut, *p, std::get<1>(*c), (StreamerItemType) std::get<0>(*c));
+
 			for (std::set<AMX*>::iterator i = core->getData()->interfaces.begin(); i != core->getData()->interfaces.end(); ++i)
 			{
 				int amxIndex = 0;

@@ -19,6 +19,8 @@
 #include "amx.h"
 #include "../core.h"
 
+#include "../OmpStreamerComponent.hpp"
+
 using namespace Utility;
 
 cell AMX_NATIVE_CALL Utility::hookedNative(AMX *amx, cell *params)
@@ -205,6 +207,11 @@ void Utility::executeFinalAreaCallbacks(int areaid)
 	}
 	for (std::vector<std::tuple<int, int> >::const_iterator c = callbacks.begin(); c != callbacks.end(); ++c)
 	{
+        auto  player   = OmpStreamerComponent::instance->players->get(std::get<0>(*c));
+        auto& areaIter = core->getData()->areas.find(std::get<1>(*c));
+        if (player && areaIter != core->getData()->areas.end())
+            OmpStreamerComponent::instance->eventDispatcher.dispatch(&streamer::StreamerEventHandler::onPlayerLeaveDynamicArea, *player, areaIter->second);
+
 		for (std::set<AMX*>::iterator amx = core->getData()->interfaces.begin(); amx != core->getData()->interfaces.end(); ++amx)
 		{
 			int amxIndex = 0;
@@ -237,6 +244,11 @@ void Utility::executeFinalAreaCallbacksForAllAreas(AMX *amx, bool ignoreInterfac
 	}
 	for (std::vector<std::tuple<int, int> >::const_iterator c = callbacks.begin(); c != callbacks.end(); ++c)
 	{
+        auto player = OmpStreamerComponent::instance->players->get(std::get<0>(*c));
+        auto& areaIter = core->getData()->areas.find(std::get<1>(*c));
+        if (player && areaIter != core->getData()->areas.end())
+            OmpStreamerComponent::instance->eventDispatcher.dispatch(&streamer::StreamerEventHandler::onPlayerLeaveDynamicArea, *player, areaIter->second);
+
 		for (std::set<AMX*>::iterator a = core->getData()->interfaces.begin(); a != core->getData()->interfaces.end(); ++a)
 		{
 			int amxIndex = 0;

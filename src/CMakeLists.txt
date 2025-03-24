@@ -29,6 +29,7 @@ list(APPEND PLUGIN_SOURCES
     areas.cpp
     miscellaneous.cpp
     OmpStreamerComponent.cpp
+    events.cpp
 )
 
 if(WIN32)

@@ -15,6 +15,7 @@
  */
 
 #include "../main.h"
+#include "../streamer/StreamerComponent.hpp"
 
 #include "../natives.h"
 #include "../core.h"

@@ -23,16 +23,21 @@
 #include "streamer/StreamerComponent.hpp"
 
 #include <Server/Components/Pawn/pawn.hpp>
+#include <Impl/events_impl.hpp>
 
 struct OmpStreamerComponent : public IOmpStreamerComponent,
                               public CoreEventHandler,
                               public PawnEventHandler,
                               public SingleNetworkOutEventHandler
 {
+    inline static OmpStreamerComponent* instance = nullptr;
+
     ICore*          omp_core      = nullptr;
     IPlayerPool*    players       = nullptr;
     IPawnComponent* pawnComponent = nullptr;
     EventHandler    streamerEventHandler;
+
+    Impl::DefaultEventDispatcher<streamer::StreamerEventHandler> eventDispatcher;
 
     StringView      componentName() const override;
     SemanticVersion componentVersion() const override;
@@ -47,6 +52,8 @@ struct OmpStreamerComponent : public IOmpStreamerComponent,
     void            free() override;
     bool            onSend(IPlayer* peer, NetworkBitStream& bs) override;
     ~OmpStreamerComponent() override;
+
+    IEventDispatcher<streamer::StreamerEventHandler>& getEventDispatcher() override;
 
     // IOmpStreamerComponent virtuals
     std::shared_ptr<streamer::IActor>          getDynamicActor(int actorId) override;

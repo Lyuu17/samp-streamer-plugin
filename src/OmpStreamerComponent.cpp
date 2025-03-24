@@ -273,6 +273,7 @@ SemanticVersion OmpStreamerComponent::componentVersion() const
 
 void OmpStreamerComponent::onLoad(ICore* c)
 {
+    instance = this;
     core.reset(new Core);
     omp_core = c;
     players  = &c->getPlayers();
@@ -367,6 +368,12 @@ bool OmpStreamerComponent::onSend(IPlayer* peer, NetworkBitStream& bs)
 OmpStreamerComponent::~OmpStreamerComponent()
 {
     // Clean up what you did above
+}
+
+// events
+IEventDispatcher<streamer::StreamerEventHandler>& OmpStreamerComponent::getEventDispatcher()
+{
+    return eventDispatcher;
 }
 
 // actors
