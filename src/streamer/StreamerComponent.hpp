@@ -225,4 +225,8 @@ struct IOmpStreamerComponent : public IComponent
     virtual std::shared_ptr<streamer::ITextLabel> createDynamicTextLabel(const std::string& text, int color, const Vector3& position, float drawDistance, int attachedPlayerId = -1, int attachedVehicleId = -1, bool testLOS = false, int worldId = -1, int interiorId = -1, int playerId = -1, float streamDistance = STREAMER_3D_TEXT_LABEL_SD, int areaId = -1, int priority = 0)                                     = 0;
     virtual std::shared_ptr<streamer::ITextLabel> createDynamicTextLabelEx(const std::string& text, int color, const Vector3& position, float drawDistance, int attachedPlayerId, int attachedVehicleId, bool testLOS, float streamDistance, const std::unordered_set<int>& worlds, const std::unordered_set<int>& interiors, const std::unordered_set<int>& players, const std::unordered_set<int>& areas, int priority) = 0;
     virtual bool                                  destroyDynamicTextLabel(int textlabelId)                                                                                                                                                                                                                                                                                                                                = 0;
+
+    virtual std::optional<float> getDistanceToItem(const Vector3& position, StreamerItemType itemType, int id, int dimensions = 3) = 0;
+    virtual bool                 toggleItem(int playerId, StreamerItemType itemType, int id, bool toggle)                          = 0;
+    virtual bool                 isToggleItem(int playerId, StreamerItemType itemType, int id)                                     = 0;
 };

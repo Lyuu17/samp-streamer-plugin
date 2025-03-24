@@ -23,6 +23,7 @@
 #include "omp-nethack.h"
 #include "./events.hpp"
 #include "objects.hpp"
+#include "miscellaneous.hpp"
 
 extern void* pAMXFunctions;
 
@@ -616,6 +617,22 @@ class OmpStreamerComponent final : public CoreEventHandler, public PawnEventHand
     bool destroyDynamicTextLabel(int textlabelId)
     {
         return streamer::textlabels::DestroyDynamicTextLabel(textlabelId);
+    }
+
+    // misc
+    std::optional<float> getDistanceToItem(const Vector3& position, StreamerItemType itemType, int id, int dimensions)
+    {
+        return streamer::miscellaneous::GetDistanceToItem(Eigen::Vector3f { position.x, position.y, position.z }, itemType, id, dimensions);
+    }
+
+    bool toggleItem(int playerId, StreamerItemType itemType, int id, bool toggle)
+    {
+        return streamer::miscellaneous::ToggleItem(playerId, itemType, id, toggle);
+    }
+
+    bool isToggleItem(int playerId, StreamerItemType itemType, int id)
+    {
+        return streamer::miscellaneous::IsToggleItem(playerId, itemType, id);
     }
 
 private:

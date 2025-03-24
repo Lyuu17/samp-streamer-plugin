@@ -27,6 +27,7 @@ list(APPEND PLUGIN_SOURCES
     race-checkpoints.cpp
     checkpoints.cpp
     areas.cpp
+    miscellaneous.cpp
 )
 
 if(WIN32)
