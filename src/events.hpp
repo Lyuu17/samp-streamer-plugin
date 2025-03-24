@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#pragma once
+
 #include "main.h"
 #include "core.h"
 #include "Server/Components/Actors/actors.hpp"

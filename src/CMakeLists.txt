@@ -28,6 +28,7 @@ list(APPEND PLUGIN_SOURCES
     checkpoints.cpp
     areas.cpp
     miscellaneous.cpp
+    OmpStreamerComponent.cpp
 )
 
 if(WIN32)
