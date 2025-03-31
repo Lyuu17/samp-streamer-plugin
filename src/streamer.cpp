@@ -50,100 +50,94 @@ void Streamer::calculateAverageElapsedTime()
 	lastRecordedTime = currentTime;
 }
 
+
 void Streamer::startAutomaticUpdate()
 {
-	if (!core->getData()->interfaces.empty())
-	{
-		std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
-		if (!core->getData()->players.empty())
-		{
-			bool updatedActiveItems = false;
-			for (std::unordered_map<int, Player>::iterator p = core->getData()->players.begin(); p != core->getData()->players.end(); ++p)
-			{
-				if (core->getChunkStreamer()->getChunkStreamingEnabled() && p->second.processingChunks.any())
-				{
-					core->getChunkStreamer()->performPlayerChunkUpdate(p->second, true);
-				}
-				else
-				{
-					if (++p->second.tickCount >= p->second.tickRate)
-					{
-						if (!updatedActiveItems)
-						{
-							processActiveItems();
-							updatedActiveItems = true;
-						}
-						if (!p->second.delayedUpdate)
-						{
-							performPlayerUpdate(p->second, true);
-						}
-						else
-						{
-							startManualUpdate(p->second, p->second.delayedUpdateType);
-						}
-						p->second.tickCount = 0;
-					}
-				}
-			}
-		}
-		else
-		{
-			processActiveItems();
-		}
-		if (++tickCount >= tickRate)
-		{
-			for (std::unordered_map<int, Player>::iterator p = core->getData()->players.begin(); p != core->getData()->players.end(); ++p)
-			{
-				std::vector<SharedCell> cells;
-				core->getGrid()->findMinimalCellsForPlayer(p->second, cells);
+    std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
+    if (!core->getData()->players.empty())
+    {
+        bool updatedActiveItems = false;
+        for (std::unordered_map<int, Player>::iterator p = core->getData()->players.begin(); p != core->getData()->players.end(); ++p)
+        {
+            if (core->getChunkStreamer()->getChunkStreamingEnabled() && p->second.processingChunks.any())
+            {
+                core->getChunkStreamer()->performPlayerChunkUpdate(p->second, true);
+            }
+            else
+            {
+                if (++p->second.tickCount >= p->second.tickRate)
+                {
+                    if (!updatedActiveItems)
+                    {
+                        processActiveItems();
+                        updatedActiveItems = true;
+                    }
+                    if (!p->second.delayedUpdate)
+                    {
+                        performPlayerUpdate(p->second, true);
+                    }
+                    else
+                    {
+                        startManualUpdate(p->second, p->second.delayedUpdateType);
+                    }
+                    p->second.tickCount = 0;
+                }
+            }
+        }
+    }
+    else
+    {
+        processActiveItems();
+    }
+    if (++tickCount >= tickRate)
+    {
+        for (std::unordered_map<int, Player>::iterator p = core->getData()->players.begin(); p != core->getData()->players.end(); ++p)
+        {
+            std::vector<SharedCell> cells;
+            core->getGrid()->findMinimalCellsForPlayer(p->second, cells);
 
-				for (std::vector<int>::const_iterator t = core->getData()->typePriority.begin(); t != core->getData()->typePriority.end(); ++t)
-				{
-					switch (*t)
-					{
-						case STREAMER_TYPE_PICKUP:
-						{
-							if (!core->getData()->pickups.empty() && p->second.enabledItems[STREAMER_TYPE_PICKUP])
-							{
-								discoverPickups(p->second, cells);
-							}
-							break;
-						}
-						case STREAMER_TYPE_ACTOR:
-						{
-							if (!core->getData()->actors.empty() && p->second.enabledItems[STREAMER_TYPE_ACTOR])
-							{
-								discoverActors(p->second, cells);
-							}
-							break;
-						}
-					}
-				}
-			}
+            for (std::vector<int>::const_iterator t = core->getData()->typePriority.begin(); t != core->getData()->typePriority.end(); ++t)
+            {
+                switch (*t)
+                {
+                case STREAMER_TYPE_PICKUP: {
+                    if (!core->getData()->pickups.empty() && p->second.enabledItems[STREAMER_TYPE_PICKUP])
+                    {
+                        discoverPickups(p->second, cells);
+                    }
+                    break;
+                }
+                case STREAMER_TYPE_ACTOR: {
+                    if (!core->getData()->actors.empty() && p->second.enabledItems[STREAMER_TYPE_ACTOR])
+                    {
+                        discoverActors(p->second, cells);
+                    }
+                    break;
+                }
+                }
+            }
+        }
 
-			for (std::vector<int>::const_iterator t = core->getData()->typePriority.begin(); t != core->getData()->typePriority.end(); ++t)
-			{
-				switch (*t)
-				{
-					case STREAMER_TYPE_PICKUP:
-					{
-						streamPickups();
-						break;
-					}
-					case STREAMER_TYPE_ACTOR:
-					{
-						Utility::processPendingDestroyedActors();
-						streamActors();
-						break;
-					}
-				}
-			}
-			executeCallbacks();
-			tickCount = 0;
-		}
-		calculateAverageElapsedTime();
-		lastUpdateTime = std::chrono::duration<float, std::milli>(std::chrono::steady_clock::now() - currentTime).count();
-	}
+        for (std::vector<int>::const_iterator t = core->getData()->typePriority.begin(); t != core->getData()->typePriority.end(); ++t)
+        {
+            switch (*t)
+            {
+            case STREAMER_TYPE_PICKUP: {
+                streamPickups();
+                break;
+            }
+            case STREAMER_TYPE_ACTOR: {
+                Utility::processPendingDestroyedActors();
+                streamActors();
+                break;
+            }
+            }
+        }
+        executeCallbacks();
+        tickCount = 0;
+    }
+    calculateAverageElapsedTime();
+    lastUpdateTime = std::chrono::duration<float, std::milli>(std::chrono::steady_clock::now() - currentTime).count();
 }
 
 void Streamer::startManualUpdate(Player &player, int type)
