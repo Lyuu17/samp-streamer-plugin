@@ -105,4 +105,6 @@ struct OmpStreamerComponent : public IOmpStreamerComponent,
     std::optional<float>                       getDistanceToItem(const Vector3& position, StreamerItemType itemType, int id, int dimensions) override;
     bool                                       toggleItem(int playerId, StreamerItemType itemType, int id, bool toggle) override;
     bool                                       isToggleItem(int playerId, StreamerItemType itemType, int id) override;
+    bool                                       update(int playerId, StreamerItemType itemType) override;
+    bool                                       updateEx(int playerId, const Vector3& position, std::optional<int> worldId, std::optional<int> interiorId, StreamerItemType itemType, std::optional<int> compensatedTime, bool freezePlayer) override;
 };

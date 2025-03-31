@@ -266,4 +266,7 @@ struct IOmpStreamerComponent : public IComponent
     virtual std::optional<float> getDistanceToItem(const Vector3& position, StreamerItemType itemType, int id, int dimensions) = 0;
     virtual bool                 toggleItem(int playerId, StreamerItemType itemType, int id, bool toggle)                      = 0;
     virtual bool                 isToggleItem(int playerId, StreamerItemType itemType, int id)                                 = 0;
+
+    virtual bool update(int playerId, StreamerItemType itemType)                                                                                                                                              = 0;
+    virtual bool updateEx(int playerId, const Vector3& position, std::optional<int> worldId, std::optional<int> interiorId, StreamerItemType itemType, std::optional<int> compensatedTime, bool freezePlayer) = 0;
 };

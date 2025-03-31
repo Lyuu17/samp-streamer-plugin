@@ -23,6 +23,7 @@
 #include "./events.hpp"
 #include "objects.hpp"
 #include "miscellaneous.hpp"
+#include "updates.hpp"
 
 extern void* pAMXFunctions;
 
@@ -636,4 +637,16 @@ bool OmpStreamerComponent::toggleItem(int playerId, StreamerItemType itemType, i
 bool OmpStreamerComponent::isToggleItem(int playerId, StreamerItemType itemType, int id)
 {
     return streamer::miscellaneous::IsToggleItem(playerId, itemType, id);
+}
+
+// updates
+
+bool OmpStreamerComponent::update(int playerId, StreamerItemType itemType)
+{
+    return streamer::updates::Update(playerId, itemType);
+}
+
+bool OmpStreamerComponent::updateEx(int playerId, const Vector3& position, std::optional<int> worldId, std::optional<int> interiorId, StreamerItemType itemType, std::optional<int> compensatedTime, bool freezePlayer)
+{
+    return streamer::updates::UpdateEx(playerId, Eigen::Vector3f { position.x, position.y, position.z }, worldId, interiorId, itemType, compensatedTime, freezePlayer);
 }

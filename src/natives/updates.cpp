@@ -19,6 +19,8 @@
 #include "../natives.h"
 #include "../core.h"
 
+#include "../updates.hpp"
+
 cell AMX_NATIVE_CALL Natives::Streamer_ProcessActiveItems(AMX *amx, cell *params)
 {
 	core->getStreamer()->processActiveItems();
@@ -110,55 +112,21 @@ cell AMX_NATIVE_CALL Natives::Streamer_GetLastUpdateTime(AMX *amx, cell *params)
 cell AMX_NATIVE_CALL Natives::Streamer_Update(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(2);
-	std::unordered_map<int, Player>::iterator p = core->getData()->players.find(static_cast<int>(params[1]));
-	if (p != core->getData()->players.end())
-	{
-		p->second.interiorId = ompgdk::GetPlayerInterior(p->first);
-		p->second.worldId = ompgdk::GetPlayerVirtualWorld(p->first);
-		ompgdk::GetPlayerPos(p->first, &p->second.position[0], &p->second.position[1], &p->second.position[2]);
-		core->getStreamer()->startManualUpdate(p->second, static_cast<int>(params[2]));
-		return 1;
-	}
+    if (streamer::updates::Update(static_cast<int>(params[1]), static_cast<StreamerItemType>(params[2]))) return 1;
 	return 0;
 }
 
 cell AMX_NATIVE_CALL Natives::Streamer_UpdateEx(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(9);
-	std::unordered_map<int, Player>::iterator p = core->getData()->players.find(static_cast<int>(params[1]));
-	if (p != core->getData()->players.end())
-	{
-		p->second.position = Eigen::Vector3f(amx_ctof(params[2]), amx_ctof(params[3]), amx_ctof(params[4]));
-		if (static_cast<int>(params[5]) >= 0)
-		{
-			p->second.worldId = static_cast<int>(params[5]);
-		}
-		else
-		{
-			p->second.worldId = ompgdk::GetPlayerVirtualWorld(p->first);
-		}
-		if (static_cast<int>(params[6]) >= 0)
-		{
-			p->second.interiorId = static_cast<int>(params[6]);
-		}
-		else
-		{
-			p->second.interiorId = ompgdk::GetPlayerInterior(p->first);
-		}
-		if (static_cast<int>(params[8]) >= 0)
-		{
-			ompgdk::SetPlayerPos(p->first, p->second.position[0], p->second.position[1], p->second.position[2]);
-			if (static_cast<int>(params[9]))
-			{
-				ompgdk::TogglePlayerControllable(p->first, false);
-			}
-			p->second.delayedUpdate = true;
-			p->second.delayedUpdateType = static_cast<int>(params[7]);
-			p->second.delayedUpdateTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(static_cast<int>(params[8]));
-			p->second.delayedUpdateFreeze = static_cast<int>(params[9]) != 0;
-		}
-		core->getStreamer()->startManualUpdate(p->second, static_cast<int>(params[7]));
-		return 1;
-	}
+
+    int                playerId = static_cast<int>(params[1]);
+    Eigen::Vector3f    position { amx_ctof(params[2]), amx_ctof(params[3]), amx_ctof(params[4]) };
+    std::optional<int> worldId           = static_cast<int>(params[5]) >= 0 ? std::optional<int>(static_cast<int>(params[5])) : std::nullopt;
+    std::optional<int> interiorId        = static_cast<int>(params[6]) >= 0 ? std::optional<int>(static_cast<int>(params[6])) : std::nullopt;
+    int                type              = static_cast<int>(params[7]);
+    std::optional<int> compensatedTime   = static_cast<int>(params[8]) >= 0 ? std::optional<int>(static_cast<int>(params[8])) : std::nullopt;
+    bool               freezePlayer      = static_cast<int>(params[9]) != 0;
+    if (streamer::updates::UpdateEx(playerId, position, worldId, interiorId, (StreamerItemType)type, compensatedTime, freezePlayer)) return 1;
 	return 0;
 }
